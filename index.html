@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>给宝宝的饰品小故事</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="wardrobe" aria-label="饰品滑动故事">
+      <section class="stage" id="stage" tabindex="0" aria-label="当前画面">
+        <video
+          class="ending-video"
+          id="endingVideo"
+          src="./assets/video/background.mp4"
+          preload="auto"
+          muted
+          playsinline
+          hidden
+        ></video>
+
+        <div class="portrait-frame" aria-label="原始造型和当前饰品">
+          <img class="base-image" src="./assets/base.png" alt="原始头像" draggable="false" />
+          <div class="sticker-layer" aria-hidden="true">
+            <img class="sticker-image" id="stickerImage" alt="" draggable="false" hidden />
+          </div>
+        </div>
+
+        <div class="stage-sheen" aria-hidden="true"></div>
+
+        <div class="look-copy" id="lookCopy" aria-live="polite">
+          <p class="look-index" id="lookIndex">01 / 06</p>
+          <p class="look-caption" id="lookCaption"></p>
+        </div>
+
+        <audio id="bgMusic" src="./assets/music/background.m4a" preload="auto" loop></audio>
+
+        <button class="music-button" id="musicButton" type="button" aria-label="播放背景音乐">
+          <svg class="music-icon music-icon--play" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 18V5l11-2v13" />
+            <circle cx="6" cy="18" r="3" />
+            <circle cx="17" cy="16" r="3" />
+          </svg>
+          <svg class="music-icon music-icon--pause" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 5v14" />
+            <path d="M16 5v14" />
+          </svg>
+        </button>
+
+        <button class="nav-button nav-button--prev" id="prevButton" type="button" aria-label="上一页">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+        <button class="nav-button nav-button--next" id="nextButton" type="button" aria-label="下一页">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </button>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
