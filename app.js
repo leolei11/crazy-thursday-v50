@@ -77,7 +77,7 @@ const looks = [
 
 const stage = document.querySelector("#stage");
 const portraitFrame = document.querySelector(".portrait-frame");
-const stickerImage = document.querySelector("#stickerImage");
+const stickerLayer = document.querySelector(".sticker-layer");
 const lookCopy = document.querySelector("#lookCopy");
 const lookIndex = document.querySelector("#lookIndex");
 const lookCaption = document.querySelector("#lookCaption");
@@ -86,6 +86,8 @@ const nextButton = document.querySelector("#nextButton");
 const endingVideo = document.querySelector("#endingVideo");
 const bgMusic = document.querySelector("#bgMusic");
 const musicButton = document.querySelector("#musicButton");
+const decoyGate = document.querySelector("#decoyGate");
+const decoyButton = document.querySelector("#decoyButton");
 
 let currentIndex = 0;
 let pointerStartX = 0;
@@ -116,6 +118,10 @@ function restartAnimation(element, className) {
   element.classList.add(className);
 }
 
+function clearSticker() {
+  stickerLayer.replaceChildren();
+}
+
 function updateText(look, index, delay = 0) {
   window.clearTimeout(copyTimer);
   lookCopy.hidden = false;
@@ -131,10 +137,9 @@ function updateText(look, index, delay = 0) {
 }
 
 function applySticker(look, direction, animate) {
+  clearSticker();
+
   if (!look.sticker) {
-    stickerImage.hidden = true;
-    stickerImage.removeAttribute("src");
-    stickerImage.classList.remove("is-entering");
     return 80;
   }
 
@@ -147,9 +152,12 @@ function applySticker(look, direction, animate) {
   setStageVariable("--from-y", "0");
   setStageVariable("--from-rotate", direction === "left" ? "-8deg" : "8deg");
 
+  const stickerImage = document.createElement("img");
+  stickerImage.className = "sticker-image";
   stickerImage.src = sticker.src;
   stickerImage.alt = sticker.alt;
-  stickerImage.hidden = false;
+  stickerImage.draggable = false;
+  stickerLayer.append(stickerImage);
 
   if (animate) {
     restartAnimation(stickerImage, "is-entering");
@@ -181,8 +189,7 @@ async function showEndingVideo() {
   updateButtons();
   lookCopy.classList.add("is-hidden");
   lookCopy.hidden = true;
-  stickerImage.hidden = true;
-  stickerImage.removeAttribute("src");
+  clearSticker();
   stage.classList.add("is-video-page");
   portraitFrame.hidden = true;
 
@@ -268,9 +275,19 @@ async function toggleMusic() {
   syncMusicButton();
 }
 
+function dismissDecoyGate() {
+  decoyGate.classList.add("is-dismissed");
+  window.setTimeout(() => {
+    decoyGate.hidden = true;
+  }, 360);
+  tryStartMusic();
+  stage.focus({ preventScroll: true });
+}
+
 prevButton.addEventListener("click", () => go(-1));
 nextButton.addEventListener("click", () => go(1));
 musicButton.addEventListener("click", toggleMusic);
+decoyButton.addEventListener("click", dismissDecoyGate);
 bgMusic.addEventListener("play", syncMusicButton);
 bgMusic.addEventListener("pause", syncMusicButton);
 endingVideo.addEventListener("ended", () => {
