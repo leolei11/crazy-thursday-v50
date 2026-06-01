@@ -12,6 +12,7 @@
     <meta property="og:image" content="https://leolei11.github.io/crazy-thursday-v50/assets/share-card.png" />
     <meta property="og:url" content="https://leolei11.github.io/crazy-thursday-v50/" />
     <link rel="icon" href="./assets/share-card.png" />
+    <link rel="preload" href="./assets/base.webp" as="image" type="image/webp" fetchpriority="high" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -31,14 +32,26 @@
           class="ending-video"
           id="endingVideo"
           src="./assets/video/background.mp4"
-          preload="auto"
+          preload="none"
           muted
           playsinline
           hidden
         ></video>
 
         <div class="portrait-frame" aria-label="原始造型和当前饰品">
-          <img class="base-image" src="./assets/base.png" alt="原始头像" draggable="false" />
+          <picture class="base-picture">
+            <source srcset="./assets/base.webp" type="image/webp" />
+            <img
+              class="base-image"
+              src="./assets/base.png"
+              width="1450"
+              height="1085"
+              alt="原始头像"
+              decoding="async"
+              fetchpriority="high"
+              draggable="false"
+            />
+          </picture>
           <div class="sticker-layer" aria-hidden="true"></div>
         </div>
 
@@ -49,7 +62,7 @@
           <p class="look-caption" id="lookCaption"></p>
         </div>
 
-        <audio id="bgMusic" src="./assets/music/background.m4a" preload="auto" loop></audio>
+        <audio id="bgMusic" src="./assets/music/background.m4a" preload="none" loop></audio>
 
         <button class="music-button" id="musicButton" type="button" aria-label="播放背景音乐">
           <svg class="music-icon music-icon--play" viewBox="0 0 24 24" aria-hidden="true">
