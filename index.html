@@ -3,11 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>给宝宝的饰品小故事</title>
-    <link rel="icon" href="data:," />
+    <title>疯狂星期四｜今日限定</title>
+    <meta name="description" content="今天也要认真吃点好的。点开看看今日隐藏菜单。" />
+    <meta name="theme-color" content="#d71920" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="疯狂星期四｜今日限定" />
+    <meta property="og:description" content="今天也要认真吃点好的。点开看看今日隐藏菜单。" />
+    <meta property="og:image" content="https://leolei11.github.io/crazy-thursday-v50/assets/share-card.png" />
+    <meta property="og:url" content="https://leolei11.github.io/crazy-thursday-v50/" />
+    <link rel="icon" href="./assets/share-card.png" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
+    <div class="decoy-gate" id="decoyGate" role="dialog" aria-label="疯狂星期四入口">
+      <div class="decoy-ticket">
+        <p class="decoy-label">今日限定</p>
+        <p class="decoy-title">疯狂星期四</p>
+        <p class="decoy-price">V 我 50</p>
+        <p class="decoy-copy">点开看看今天的隐藏菜单</p>
+        <button class="decoy-button" id="decoyButton" type="button">立即查看</button>
+      </div>
+    </div>
+
     <main class="wardrobe" aria-label="饰品滑动故事">
       <section class="stage" id="stage" tabindex="0" aria-label="当前画面">
         <video
@@ -22,9 +39,7 @@
 
         <div class="portrait-frame" aria-label="原始造型和当前饰品">
           <img class="base-image" src="./assets/base.png" alt="原始头像" draggable="false" />
-          <div class="sticker-layer" aria-hidden="true">
-            <img class="sticker-image" id="stickerImage" alt="" draggable="false" hidden />
-          </div>
+          <div class="sticker-layer" aria-hidden="true"></div>
         </div>
 
         <div class="stage-sheen" aria-hidden="true"></div>
