@@ -11,7 +11,7 @@ const looks = [
       "宝宝我们刚认识的时候，你就带着这个蓝色棒球帽，算是经典皮肤了哈哈哈哈。那个时候我还没有喜欢你呢，但是宝宝，你已经吸引到我的注意力了v-v",
     accent: "#18365f",
     sticker: {
-      src: "./assets/stickers/cap-fitted.png",
+      src: "./assets/stickers/cap-fitted.webp",
       alt: "深蓝棒球帽",
       left: 30.7,
       top: -1.8,
@@ -25,7 +25,7 @@ const looks = [
       "我们看的第一场电影，虽然是奇幻的风格，但是居然有感情线。我也想成为拯救世界的英雄，然后和你在一起。",
     accent: "#7e9d24",
     sticker: {
-      src: "./assets/stickers/dragon.png",
+      src: "./assets/stickers/dragon.webp",
       alt: "小黑龙发夹",
       left: 45.7,
       top: 6.9,
@@ -38,7 +38,7 @@ const looks = [
     caption: "我们在假期也约会，你专门路过深圳找我，我可开心了。我们去了萨摩耶咖啡馆，我们第一次坐的那么近。",
     accent: "#9f7442",
     sticker: {
-      src: "./assets/stickers/dog.png",
+      src: "./assets/stickers/dog.webp",
       alt: "白色小狗",
       left: 25.3,
       top: 54,
@@ -52,7 +52,7 @@ const looks = [
       "这是我们期待了一个学期的海岛之旅，宝宝，我真的好开心。在寒冷的冬天和你度过了这么火热的一个旅程。我们都又了很多新鲜的第一次体验。",
     accent: "#d3c800",
     sticker: {
-      src: "./assets/stickers/goggles.png",
+      src: "./assets/stickers/goggles.webp",
       alt: "黄色潜水镜",
       left: 30.3,
       top: 6.7,
@@ -65,7 +65,7 @@ const looks = [
     caption: "这是我们刚刚去的延边，很遗憾我们没有拍上照片，但是宝宝你是一园子里最好看的公主。宝宝，我们的故事会一直书写。",
     accent: "#b91f24",
     sticker: {
-      src: "./assets/stickers/headdress.png",
+      src: "./assets/stickers/headdress.webp",
       alt: "红珠花冠",
       left: 28.8,
       top: 7.3,
@@ -94,6 +94,7 @@ let pointerStartX = 0;
 let pointerStartY = 0;
 let copyTimer = 0;
 let userTriedMusic = false;
+const preloadedImages = new Set();
 const endingIndex = looks.length;
 
 function padIndex(index) {
@@ -120,6 +121,41 @@ function restartAnimation(element, className) {
 
 function clearSticker() {
   stickerLayer.replaceChildren();
+}
+
+function scheduleBackgroundWork(callback) {
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(callback, { timeout: 1600 });
+    return;
+  }
+
+  window.setTimeout(callback, 120);
+}
+
+function preloadImage(src) {
+  if (!src || preloadedImages.has(src)) {
+    return;
+  }
+
+  preloadedImages.add(src);
+  const image = new Image();
+  image.decoding = "async";
+  image.src = src;
+}
+
+function warmUpcomingAssets(index) {
+  const nextLooks = looks.slice(index, Math.min(looks.length, index + 3));
+  nextLooks.forEach((look) => preloadImage(look.sticker?.src));
+}
+
+function primeEndingVideo() {
+  if (endingVideo.dataset.primed === "true") {
+    return;
+  }
+
+  endingVideo.preload = "auto";
+  endingVideo.load();
+  endingVideo.dataset.primed = "true";
 }
 
 function updateText(look, index, delay = 0) {
@@ -154,6 +190,8 @@ function applySticker(look, direction, animate) {
 
   const stickerImage = document.createElement("img");
   stickerImage.className = "sticker-image";
+  stickerImage.decoding = "async";
+  stickerImage.fetchPriority = "high";
   stickerImage.src = sticker.src;
   stickerImage.alt = sticker.alt;
   stickerImage.draggable = false;
@@ -197,6 +235,7 @@ async function showEndingVideo() {
   endingVideo.classList.remove("is-frozen");
   endingVideo.currentTime = 0;
   endingVideo.muted = true;
+  primeEndingVideo();
   restartAnimation(endingVideo, "is-visible");
 
   try {
@@ -223,6 +262,13 @@ function setLook(index, direction = "right", animate = true) {
   const copyDelay = applySticker(look, direction, animate);
   updateText(look, nextIndex, copyDelay);
   updateButtons();
+
+  scheduleBackgroundWork(() => {
+    warmUpcomingAssets(nextIndex + 1);
+    if (nextIndex >= endingIndex - 2) {
+      primeEndingVideo();
+    }
+  });
 }
 
 function go(delta) {
@@ -281,6 +327,7 @@ function dismissDecoyGate() {
     decoyGate.hidden = true;
   }, 360);
   tryStartMusic();
+  scheduleBackgroundWork(() => warmUpcomingAssets(1));
   stage.focus({ preventScroll: true });
 }
 
